@@ -9,69 +9,83 @@ namespace Day_3
         static void Main(string[] args)
         {
             var inputs = input.Split("\r\n").ToList();
-            var calculator = new GERateCalculator(inputs);
-            calculator.CalculateConsumption();
-            calculator.PrintResult();
+            var calculator = new RateCalculator(inputs);
+            calculator.CalculateLifeSupportRating();
+            calculator.PrintResults();
 
         }
 
-        public class GERateCalculator
+        public class RateCalculator
         {
             private List<string> binaryNumbers;
             private int binaryNumbersLength;
-            private int gammaRate;
-            private List<int> gammaRateBinary;
-            private int epsilonRate;
-            private List<int> epsilonRateBinary;
-            private int consumption;
-            public GERateCalculator(List<string> inputs)
+            private int oxygenGeneratorRate;
+            private string oxygenGeneratorRateBinary;
+            private int co2ScrubberRate;
+            private string co2ScrubberRateBinary;
+            private int lifeSupport;
+            public RateCalculator(List<string> inputs)
             {
                 binaryNumbers = inputs;
                 binaryNumbersLength = inputs.First().Length;
-                consumption = 0;
-                gammaRateBinary = new List<int>();
-                epsilonRateBinary = new List<int>();
+                lifeSupport = 0;
             }
 
-            public void CalculateConsumption()
+            public void CalculateLifeSupportRating()
             {
                 CalculateBinaryNumbers();
                 ConvertBinaryResultsToInts();
-                consumption = gammaRate * epsilonRate;
+                lifeSupport = oxygenGeneratorRate * co2ScrubberRate;
             }
 
             private void CalculateBinaryNumbers()
             {
+                List<string> OxygenBinaryNumbers =binaryNumbers.Select(x=>x.Clone().ToString()).ToList();
+                List<string> Co2BinaryNumbers =binaryNumbers.Select(x=>x.Clone().ToString()).ToList();
                 for (int i = 0; i < binaryNumbersLength; i++)
                 {
-                    var isMoreZeros = binaryNumbers.Where(x => x[i] == '0').Count() > binaryNumbers.Where(x => x[i] == '1').Count();
-                    if (isMoreZeros)
-                    {
-                        gammaRateBinary.Add(0);
-                        epsilonRateBinary.Add(1);
+                    var isMoreZerosInOxygen = OxygenBinaryNumbers.Where(x => x[i] == '0').Count() > OxygenBinaryNumbers.Where(x => x[i] == '1').Count();
+                    var isMoreZerosInCo2 = Co2BinaryNumbers.Where(x => x[i] == '0').Count() > Co2BinaryNumbers.Where(x => x[i] == '1').Count();
+                    if (OxygenBinaryNumbers.Count() > 1)
+                    { if (isMoreZerosInOxygen)
+                        {
+                            OxygenBinaryNumbers = OxygenBinaryNumbers.Where(x => x[i] == '0').ToList();
+                        }
+                        else
+                        {
+                            OxygenBinaryNumbers = OxygenBinaryNumbers.Where(x => x[i] == '1').ToList();
+                        }
                     }
-                    else
+                    if (Co2BinaryNumbers.Count() > 1)
                     {
-                        gammaRateBinary.Add(1);
-                        epsilonRateBinary.Add(0);
+                        if (isMoreZerosInCo2)
+                        {
+                            Co2BinaryNumbers = Co2BinaryNumbers.Where(x => x[i] == '1').ToList();
+                        }
+                        else
+                        {
+                            Co2BinaryNumbers = Co2BinaryNumbers.Where(x => x[i] == '0').ToList();
+                        }
                     }
                 }
+                oxygenGeneratorRateBinary = OxygenBinaryNumbers.First();
+                co2ScrubberRateBinary = Co2BinaryNumbers.First();
             }
 
             private void ConvertBinaryResultsToInts()
             {
-                gammaRate = 0;
-                epsilonRate = 0;
+                oxygenGeneratorRate = 0;
+                co2ScrubberRate = 0;
                 for (int i = 0; i < binaryNumbersLength; i++)
                 {
-                    gammaRate += gammaRateBinary[i] * (int)Math.Pow(2, binaryNumbersLength - i - 1);
-                    epsilonRate += epsilonRateBinary[i] * (int)Math.Pow(2, binaryNumbersLength - i - 1);
+                    oxygenGeneratorRate += Int32.Parse(oxygenGeneratorRateBinary[i].ToString()) * (int)Math.Pow(2, binaryNumbersLength - i - 1);
+                    co2ScrubberRate += Int32.Parse(co2ScrubberRateBinary[i].ToString()) * (int)Math.Pow(2, binaryNumbersLength - i - 1);
                 }
             }
 
-            public void PrintResult()
+            public void PrintResults()
             {
-                Console.WriteLine(consumption);
+                Console.WriteLine(lifeSupport);
             }
         }
 
