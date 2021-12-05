@@ -8,8 +8,6 @@ namespace Day_2
     {
         static void Main(string[] args)
         {
-            var horizontalPosition = 0;
-            var depth = 0;
             var moves = new List<Tuple<string, int>>();
             var inputs = input.Split("\r\n");
             foreach (var move in inputs)
@@ -17,14 +15,49 @@ namespace Day_2
                 var moveParts = move.Split(' ');
                 moves.Add(new Tuple<string, int>(moveParts[0], Int32.Parse(moveParts[1])));
             }
-            foreach (var move in moves.Where(x => x.Item1.Equals("forward")))
-                horizontalPosition += move.Item2;
-            foreach (var move in moves.Where(x => x.Item1.Equals("up")))
-                depth -= move.Item2;
-            foreach (var move in moves.Where(x => x.Item1.Equals("down")))
-                depth += move.Item2;
+            var submarine = new Submarine();
+            foreach(var move in moves)
+            {
+                submarine.Move(move);
+            }
 
-            Console.WriteLine(horizontalPosition * depth);
+            Console.WriteLine(submarine.GetHorizontalPositionMultipliedWithDepth());
+        }
+
+        public class Submarine
+        {
+            private int horizontalPosition;
+            private int depth;
+            private int aim;
+
+            public Submarine()
+            {
+                horizontalPosition = 0;
+                depth = 0;
+                aim = 0;
+            }
+
+            public void Move(Tuple<string, int> move)
+            {
+                switch(move.Item1)
+                {
+                    case "forward":
+                        horizontalPosition += move.Item2;
+                        depth += aim * move.Item2;
+                        break;
+                    case "up":
+                        aim -= move.Item2;
+                        break;
+                    case "down":
+                        aim += move.Item2;
+                        break;
+                }
+            }
+
+            public int GetHorizontalPositionMultipliedWithDepth()
+            {
+                return horizontalPosition * depth;
+            }
         }
 
 
