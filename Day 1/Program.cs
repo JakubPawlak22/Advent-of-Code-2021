@@ -21,11 +21,6 @@ namespace Day_1
                 if (inputs[i] > inputs[i - 3])
                     result++;
             }
-            for (int i = 1; i < inputs.Count; i++)
-            {
-                if (inputs[i] > inputs[i - 1])
-                    result++;
-            }
             return result;
         }
 
