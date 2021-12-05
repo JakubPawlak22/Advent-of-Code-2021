@@ -16,6 +16,11 @@ namespace Day_1
         private static int CheckNumberOfIncreasing(List<int> inputs)
         {
             var result = 0;
+            for (int i = 3; i < inputs.Count; i++)
+            {
+                if (inputs[i] > inputs[i - 3])
+                    result++;
+            }
             for (int i = 1; i < inputs.Count; i++)
             {
                 if (inputs[i] > inputs[i - 1])
